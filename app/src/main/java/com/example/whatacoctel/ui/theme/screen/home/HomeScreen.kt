@@ -22,14 +22,14 @@ fun HomeScreen() {
                 .background(Color.Black)
                 .padding(16.dp)
         ) {
-            // Buscador
+            // Input de Buscador
             TextField(
                 value = query,
                 onValueChange = { query = it },
                 placeholder = { Text("Buscar cocktail") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 16.dp, top = 5.dp)
             )
 
             // Grid con 2 columnas
