@@ -16,7 +16,7 @@ import com.example.whatacoctel.data.remote.api.CocktailApi
 //import com.example.whatacoctel.data.repository.CocktailRepositoryImpl
 import com.example.whatacoctel.domain.repository.CocktailRepository
 import com.example.whatacoctel.ui.theme.WhatACoctelTheme
-import com.example.whatacoctel.ui.theme.screen.home.CocktailScreen
+import com.example.whatacoctel.ui.theme.screen.home.HomeScreen
 import com.example.whatacoctel.ui.theme.screen.home.HomeViewModel
 
 
@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CocktailScreen(HomeViewModel())
+            HomeScreen(HomeViewModel())
         }
     }
 }

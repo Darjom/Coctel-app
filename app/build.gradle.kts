@@ -64,6 +64,10 @@ dependencies {
     // Gson local
     implementation("com.google.code.gson:gson:2.11.0")
 
+    //coil
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+
     // Lifecycle + ViewModel + coroutines
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")

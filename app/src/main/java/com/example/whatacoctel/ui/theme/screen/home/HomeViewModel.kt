@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.whatacoctel.data.remote.api.RetrofitInstance
 import com.example.whatacoctel.domain.model.Cocktail
+import com.example.whatacoctel.domain.model.CocktailShort
 import com.example.whatacoctel.domain.model.ListCockatail
 import com.example.whatacoctel.domain.repository.CocktailRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,9 @@ class HomeViewModel(): ViewModel() {
     //private val _cocktails = mutableStateOf<List<Cocktail>>(emptyList())
     //val cocktail = RetrofitInstance.service.getRandomCocktail()
 
+    private val _cocktailList = MutableStateFlow<List<CocktailShort>>(emptyList())
+    val cocktailList: StateFlow<List<CocktailShort>> = _cocktailList
+
     private val _cocktail = MutableStateFlow<Cocktail?>(null)
     val cocktail: StateFlow<Cocktail?> = _cocktail
 
@@ -30,9 +34,34 @@ class HomeViewModel(): ViewModel() {
     val isLoading: StateFlow<Boolean> = _isLoading
 
     init{
+        loadAll()
         random()
     }
 
+    fun loadAll() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val response = RetrofitInstance.service.getAllCocktails()
+                _cocktailList.value = response.drinks
+            } catch(e: Exception) {
+                _error.value = e.message
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+    fun loadDetail(id: String) = viewModelScope.launch {
+        _isLoading.value = true
+        try {
+            val resp = RetrofitInstance.service.lookupCocktail(id)
+            _cocktail.value = resp.drinks.firstOrNull()
+        } catch(e: Exception) {
+            _error.value = e.message
+        } finally {
+            _isLoading.value = false
+        }
+    }
 
     fun random() {
         viewModelScope.launch {
