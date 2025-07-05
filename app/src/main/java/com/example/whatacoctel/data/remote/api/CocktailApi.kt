@@ -19,4 +19,7 @@ interface CocktailApi {
     @GET("api/json/v1/1/lookup.php")
     suspend fun lookupCocktail(@Query("i") id: String): ListCockatail
 
+    @GET("api/json/v1/1/search.php")
+    suspend fun searchCocktail(@Query("s") query: String): CocktailListResponse
+
 }

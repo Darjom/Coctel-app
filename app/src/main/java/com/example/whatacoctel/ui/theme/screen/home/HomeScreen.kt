@@ -22,41 +22,73 @@ import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import com.example.whatacoctel.ui.theme.Mint
 
 import androidx.compose.ui.text.font.FontWeight
+
+import kotlinx.coroutines.delay
+
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
     val list by viewModel.cocktailList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+    var query by remember { mutableStateOf("") }
 
-    Box(modifier = Modifier
-        .fillMaxSize()){
-        when {
-            isLoading -> {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+    LaunchedEffect(query) {
+        kotlinx.coroutines.delay(500)
+        if (query.isBlank()) {
+            viewModel.loadAll()
+        } else {
+            viewModel.search(query)
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 56.dp)
+        ) {
+            TextField(
+                value = query,
+                onValueChange = { query = it },
+                placeholder = { Text("Buscar cocktail") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            )
+            when {
+                isLoading -> {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
                 }
-            }
-            error != null -> {
-                Text(
-                    "Error: $error",
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.align(Alignment.Center).padding(16.dp)
-                )
-            }
-            else -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.align(Alignment.TopCenter)
-                ) {
-                    items(list) { item ->
-                        CocktailShortCard(item) {
-                            viewModel.loadDetail(item.id)
+                error != null -> {
+                    Text(
+                        "Error: $error",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    )
+                }
+                else -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(list) { item ->
+                            CocktailShortCard(item) {
+                                viewModel.loadDetail(item.id)
+                            }
                         }
                     }
                 }
@@ -73,13 +105,14 @@ fun HomeScreen(viewModel: HomeViewModel) {
 
 
 
+
 @Composable
 fun CocktailShortCard(cocktail: CocktailShort, onClick: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
-            .background(Color.DarkGray)
+            .background(Mint)
             .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

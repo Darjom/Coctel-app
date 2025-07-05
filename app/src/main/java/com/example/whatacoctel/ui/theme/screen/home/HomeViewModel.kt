@@ -75,8 +75,24 @@ class HomeViewModel(): ViewModel() {
             }
         }
     }
-}
 
+    fun search(query: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val response = RetrofitInstance.service.searchCocktail(query)
+                _cocktailList.value = response.drinks
+            } catch (e: Exception) {
+                _error.value = e.message
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+
+
+}
 
 
 
