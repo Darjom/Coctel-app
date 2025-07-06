@@ -24,6 +24,9 @@ class HomeViewModel(): ViewModel() {
     private val _cocktailList = MutableStateFlow<List<CocktailShort>>(emptyList())
     val cocktailList: StateFlow<List<CocktailShort>> = _cocktailList
 
+    private val _selected = MutableStateFlow<Cocktail?>(null)
+    val selected: StateFlow<Cocktail?> = _selected
+
     private val _cocktail = MutableStateFlow<Cocktail?>(null)
     val cocktail: StateFlow<Cocktail?> = _cocktail
 
@@ -55,12 +58,18 @@ class HomeViewModel(): ViewModel() {
         _isLoading.value = true
         try {
             val resp = RetrofitInstance.service.lookupCocktail(id)
-            _cocktail.value = resp.drinks.firstOrNull()
-        } catch(e: Exception) {
+            val detail = resp.drinks.firstOrNull()
+            _cocktail.value = detail
+            _selected.value = detail
+        } catch (e: Exception) {
             _error.value = e.message
         } finally {
             _isLoading.value = false
         }
+    }
+
+    fun clearSelected() {
+        _selected.value = null
     }
 
     fun random() {

@@ -1,7 +1,9 @@
+@file:Suppress("ModifierParameter")
 package com.example.whatacoctel.ui.theme.screen.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -26,34 +28,44 @@ import com.example.whatacoctel.ui.theme.Mint
 
 import androidx.compose.ui.text.font.FontWeight
 
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
+
+
+import kotlinx.coroutines.launch
+
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import coil.compose.AsyncImage
 
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
     val list by viewModel.cocktailList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+    val selected by viewModel.selected.collectAsState()
     var query by remember { mutableStateOf("") }
 
     LaunchedEffect(query) {
-        kotlinx.coroutines.delay(500)
-        if (query.isBlank()) {
-            viewModel.loadAll()
-        } else {
-            viewModel.search(query)
-        }
+        delay(500)
+        if (query.isBlank()) viewModel.loadAll()
+        else viewModel.search(query)
     }
+
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 56.dp)
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 56.dp)
         ) {
             TextField(
                 value = query,
@@ -63,35 +75,75 @@ fun HomeScreen(viewModel: HomeViewModel) {
                     .fillMaxWidth()
                     .padding(8.dp)
             )
-            when {
-                isLoading -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(list) { item ->
+                    CocktailShortCard(item) {
+                        viewModel.loadDetail(item.id)
                     }
                 }
-                error != null -> {
-                    Text(
-                        "Error: $error",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier
+            }
+        }
+
+        if (isLoading) {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else if (error != null) {
+            Text(
+                "Error: $error",
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(16.dp)
+            )
+        }
+
+        if (selected != null) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    scope.launch { sheetState.hide() }
+                    viewModel.clearSelected()
+                },
+                sheetState = sheetState,
+                contentWindowInsets = { BottomSheetDefaults.windowInsets },
+            ) {
+                selected?.let { cocktail ->
+                    Column(
+                        Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
-                    )
-                }
-                else -> {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        contentPadding = PaddingValues(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(list) { item ->
-                            CocktailShortCard(item) {
-                                viewModel.loadDetail(item.id)
-                            }
+                        AsyncImage(
+                            model = cocktail.strDrinkThumb,
+                            contentDescription = cocktail.strDrink,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp),
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        Text(cocktail.strDrink.orEmpty(), style = MaterialTheme.typography.headlineSmall)
+                        Text("Categoría: ${cocktail.strCategory.orEmpty()}", style = MaterialTheme.typography.bodyMedium)
+                        Spacer(Modifier.height(8.dp))
+                        Text("Instrucciones:", fontWeight = FontWeight.Bold)
+                        Text(cocktail.strInstructions.orEmpty(), style = MaterialTheme.typography.bodySmall)
+                        Spacer(Modifier.height(16.dp))
+                        Button(onClick = {
+                            // Navegación a la pantalla detalle
+                        }) {
+                            Text("Ver más detalles")
                         }
                     }
                 }
+            }
+            LaunchedEffect(selected) {
+                if (selected != null) scope.launch { sheetState.show() }
             }
         }
 
@@ -103,16 +155,14 @@ fun HomeScreen(viewModel: HomeViewModel) {
     }
 }
 
-
-
-
 @Composable
 fun CocktailShortCard(cocktail: CocktailShort, onClick: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
-            .background(Mint)
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .clickable { onClick() }
             .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -126,7 +176,7 @@ fun CocktailShortCard(cocktail: CocktailShort, onClick: () -> Unit = {}) {
         Spacer(Modifier.height(8.dp))
         Text(
             text = cocktail.name,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(horizontal = 4.dp)
         )

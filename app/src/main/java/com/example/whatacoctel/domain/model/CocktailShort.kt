@@ -11,3 +11,9 @@ data class CocktailShort(
 data class CocktailListResponse(
     @SerializedName("drinks") val drinks: List<CocktailShort>
 )
+
+data class CocktailLookupResponse(
+    @SerializedName("drinks")
+    val drinks: List<Cocktail>
+)
+
