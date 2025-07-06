@@ -42,7 +42,7 @@ import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: HomeViewModel) {
+fun HomeScreen(viewModel: HomeViewModel,onNavigateToDetail: (String) -> Unit) {
     val list by viewModel.cocktailList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
@@ -135,7 +135,10 @@ fun HomeScreen(viewModel: HomeViewModel) {
                         Text(cocktail.strInstructions.orEmpty(), style = MaterialTheme.typography.bodySmall)
                         Spacer(Modifier.height(16.dp))
                         Button(onClick = {
-                            // Navegación a la pantalla detalle
+                            selected?.idDrink?.let { id ->
+                                viewModel.clearSelected()
+                                onNavigateToDetail(id)
+                            }
                         }) {
                             Text("Ver más detalles")
                         }
