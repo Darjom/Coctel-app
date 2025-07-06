@@ -38,7 +38,6 @@ class HomeViewModel(): ViewModel() {
 
     init{
         loadAll()
-        random()
     }
 
     fun loadAll() {
@@ -75,8 +74,10 @@ class HomeViewModel(): ViewModel() {
     fun random() {
         viewModelScope.launch {
             try {
-                val result = RetrofitInstance.service.getRandomCocktail()
-                _cocktail.value = result
+                val resp = RetrofitInstance.service.getRandomCocktail()
+                val detail = resp.drinks.firstOrNull()
+                _cocktail.value = detail
+                _selected.value = detail
             }catch (e: Exception) {
                 _error.value = e.message
             }finally{

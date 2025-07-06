@@ -42,7 +42,7 @@ import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: HomeViewModel,onNavigateToDetail: (String) -> Unit) {
+fun HomeScreen(viewModel: HomeViewModel,onNavigateToDetail: (String) -> Unit,onNavigateToShake: () -> Unit) {
     val list by viewModel.cocktailList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
@@ -153,7 +153,8 @@ fun HomeScreen(viewModel: HomeViewModel,onNavigateToDetail: (String) -> Unit) {
         NavBar(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            onShakeClick = onNavigateToShake
         )
     }
 }

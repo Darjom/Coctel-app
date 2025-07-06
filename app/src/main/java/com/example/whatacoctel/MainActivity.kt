@@ -15,6 +15,7 @@ import com.example.whatacoctel.ui.theme.WhatACoctelTheme
 import com.example.whatacoctel.ui.theme.screen.home.DetailScreen
 import com.example.whatacoctel.ui.theme.screen.home.HomeScreen
 import com.example.whatacoctel.ui.theme.screen.home.HomeViewModel
+import com.example.whatacoctel.ui.theme.screen.home.ShakeScreen
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("ViewModelConstructorInComposable")
@@ -32,10 +33,14 @@ class MainActivity : ComponentActivity() {
                     composable("home") {
                         HomeScreen(
                             viewModel = HomeViewModel(),
-                            onNavigateToDetail = { cocktailId ->
-                                navController.navigate("detail/$cocktailId")
-                            }
+                            onNavigateToDetail = { id -> navController.navigate("detail/$id") },
+                            onNavigateToShake = { navController.navigate("shake") }
                         )
+                    }
+                    composable("shake") {
+                        ShakeScreen { cocktailId ->
+                            navController.navigate("detail/$cocktailId")
+                        }
                     }
                     composable(
                         route = "detail/{id}",

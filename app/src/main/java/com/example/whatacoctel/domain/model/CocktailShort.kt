@@ -17,3 +17,7 @@ data class CocktailLookupResponse(
     val drinks: List<Cocktail>
 )
 
+data class CocktailRamdomResponse(
+    @SerializedName("drinks")
+    val drinks: List<Cocktail>
+)
