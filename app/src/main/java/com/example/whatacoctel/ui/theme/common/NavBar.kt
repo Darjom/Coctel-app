@@ -28,7 +28,6 @@ fun NavBar(
             color = Color.White,
             modifier = Modifier.clickable { onHomeClick() }
         )
-        Text("Populares", color = Color.White)
         Text(
             text = "Shake it",
             color = Color.White,
