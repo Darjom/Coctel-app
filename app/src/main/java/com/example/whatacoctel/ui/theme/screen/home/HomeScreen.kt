@@ -1,43 +1,30 @@
 @file:Suppress("ModifierParameter")
 package com.example.whatacoctel.ui.theme.screen.home
 
+
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.example.whatacoctel.domain.model.CocktailShort
 import com.example.whatacoctel.ui.theme.common.NavBar
-import coil.compose.rememberAsyncImagePainter
-
-import androidx.compose.foundation.lazy.grid.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import com.example.whatacoctel.ui.theme.Mint
-
-import androidx.compose.ui.text.font.FontWeight
-
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.rememberModalBottomSheetState
-
-
-import kotlinx.coroutines.launch
-
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import coil.compose.AsyncImage
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,6 +49,7 @@ fun HomeScreen(viewModel: HomeViewModel,onNavigateToDetail: (String) -> Unit,onN
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
+            .padding(top = 50.dp)
     ) {
         Column(modifier = Modifier
             .fillMaxSize()
@@ -74,6 +62,8 @@ fun HomeScreen(viewModel: HomeViewModel,onNavigateToDetail: (String) -> Unit,onN
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
             )
 
             LazyVerticalGrid(
@@ -125,14 +115,15 @@ fun HomeScreen(viewModel: HomeViewModel,onNavigateToDetail: (String) -> Unit,onN
                             contentDescription = cocktail.strDrink,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(200.dp),
+                                .height(200.dp)
+                                .clip(RoundedCornerShape(12.dp))
                         )
                         Spacer(Modifier.height(12.dp))
                         Text(cocktail.strDrink.orEmpty(), style = MaterialTheme.typography.headlineSmall)
                         Text("Categoría: ${cocktail.strCategory.orEmpty()}", style = MaterialTheme.typography.bodyMedium)
                         Spacer(Modifier.height(8.dp))
                         Text("Instrucciones:", fontWeight = FontWeight.Bold)
-                        Text(cocktail.strInstructions.orEmpty(), style = MaterialTheme.typography.bodySmall)
+                        Text(cocktail.strInstructionsES.orEmpty(), style = MaterialTheme.typography.bodySmall)
                         Spacer(Modifier.height(16.dp))
                         Button(onClick = {
                             selected?.idDrink?.let { id ->
@@ -159,31 +150,43 @@ fun HomeScreen(viewModel: HomeViewModel,onNavigateToDetail: (String) -> Unit,onN
     }
 }
 
+
 @Composable
 fun CocktailShortCard(cocktail: CocktailShort, onClick: () -> Unit = {}) {
-    Column(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .clickable { onClick() }
-            .padding(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .clip(RoundedCornerShape(16.dp))
+            .clickable { onClick() },
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(2.dp, Color.Gray),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Image(
-            painter = rememberAsyncImagePainter(cocktail.thumbnail),
-            contentDescription = cocktail.name,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(120.dp)
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = cocktail.name,
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(horizontal = 4.dp)
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Image(
+                painter = rememberAsyncImagePainter(cocktail.thumbnail),
+                contentDescription = cocktail.name,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = cocktail.name,
+                //fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+        }
     }
 }
+
 

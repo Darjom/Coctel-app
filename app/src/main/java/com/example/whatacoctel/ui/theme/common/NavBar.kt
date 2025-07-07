@@ -22,8 +22,6 @@ fun NavBar(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text("Inicio", color = Color.White)
-        Text("Populares", color = Color.White)
         Text(
             text = "Shake it",
             color = Color.White,

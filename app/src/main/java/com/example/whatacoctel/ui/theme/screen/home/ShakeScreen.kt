@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import kotlin.math.sqrt
@@ -63,10 +64,25 @@ fun ShakeScreen(onRandomFetched: (String) -> Unit) {
         when {
             isLoading -> CircularProgressIndicator()
             error != null -> Text("Error: $error", color = MaterialTheme.colorScheme.error)
-            cocktail == null -> Text("¡Sacude el móvil!", fontSize = 32.sp, fontWeight = FontWeight.Bold)
+            cocktail == null -> {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        "¡Sacude el móvil!",
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "Deja que el azar elija un cóctel para ti.",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
+            }
             else -> {
                 LaunchedEffect(cocktail) { onRandomFetched(cocktail!!.idDrink.orEmpty()) }
             }
         }
     }
+
 }
