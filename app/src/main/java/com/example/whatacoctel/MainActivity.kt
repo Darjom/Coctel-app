@@ -34,7 +34,8 @@ class MainActivity : ComponentActivity() {
                         HomeScreen(
                             viewModel = HomeViewModel(),
                             onNavigateToDetail = { id -> navController.navigate("detail/$id") },
-                            onNavigateToShake = { navController.navigate("shake") }
+                            onNavigateToShake = { navController.navigate("shake") },
+                            onNavigateToHome = {navController.navigate("home")}
                         )
                     }
                     composable("shake") {

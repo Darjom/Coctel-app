@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: HomeViewModel,onNavigateToDetail: (String) -> Unit,onNavigateToShake: () -> Unit) {
+fun HomeScreen(viewModel: HomeViewModel,onNavigateToDetail: (String) -> Unit,onNavigateToShake: () -> Unit,onNavigateToHome: () -> Unit) {
     val list by viewModel.cocktailList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
@@ -145,7 +145,8 @@ fun HomeScreen(viewModel: HomeViewModel,onNavigateToDetail: (String) -> Unit,onN
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth(),
-            onShakeClick = onNavigateToShake
+            onShakeClick = onNavigateToShake,
+            onHomeClick = onNavigateToHome
         )
     }
 }

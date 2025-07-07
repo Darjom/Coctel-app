@@ -13,7 +13,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun NavBar(
     modifier: Modifier = Modifier,
-    onShakeClick: () -> Unit
+    onShakeClick: () -> Unit,
+    onHomeClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -22,6 +23,12 @@ fun NavBar(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Text(
+            text = "Inicio",
+            color = Color.White,
+            modifier = Modifier.clickable { onHomeClick() }
+        )
+        Text("Populares", color = Color.White)
         Text(
             text = "Shake it",
             color = Color.White,
